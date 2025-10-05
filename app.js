@@ -24,7 +24,7 @@ async function loadData() {
 // Traiter les données brutes
 function processData(deputesData) {
     const partiGroups = {};
-    
+
     deputesData.forEach(depute => {
         const parti = depute.groupe_politique;
         if (!partiGroups[parti]) {
@@ -37,12 +37,12 @@ function processData(deputesData) {
         const deputes = partiGroups[parti];
         const cspCounts = {};
         const genderCounts = { M: 0, F: 0 };
-        
+
         deputes.forEach(d => {
             // Nettoyer les chiffres collés
             const csp = (d.Categorie_Socio || 'Non spécifié').replace(/\d+$/, '').trim();
             cspCounts[csp] = (cspCounts[csp] || 0) + 1;
-            
+
             if (d.sexe === 'M') genderCounts.M++;
             else if (d.sexe === 'F') genderCounts.F++;
         });
@@ -112,6 +112,9 @@ function renderComparisonChart(data) {
     });
 
     const categories = Array.from(allCategories).sort();
+    const isMobile = window.innerWidth < 768;
+    const isSmallMobile = window.innerWidth < 480;
+
     const datasets = data.slice(0, 10).map((parti, index) => ({
         label: parti.parti.substring(0, 35) + (parti.parti.length > 35 ? '...' : ''),
         data: categories.map(cat => {
@@ -123,15 +126,25 @@ function renderComparisonChart(data) {
 
     const ctx = document.getElementById('comparison-chart');
     if (charts.comparison) charts.comparison.destroy();
-    
+
+    // Définir la hauteur du canvas directement
+    ctx.style.height = isSmallMobile ? '300px' : isMobile ? '400px' : '500px';
+
     charts.comparison = new Chart(ctx, {
         type: 'bar',
         data: { labels: categories, datasets: datasets },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: false,  // Gardez false mais avec hauteur définie
             plugins: {
-                legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: { size: isMobile ? 9 : 11 },
+                        boxWidth: 12,
+                        padding: isMobile ? 8 : 10
+                    }
+                },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
@@ -141,11 +154,39 @@ function renderComparisonChart(data) {
                 }
             },
             scales: {
-                y: { beginAtZero: true, title: { display: true, text: 'Pourcentage (%)' } }
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: !isMobile,
+                        text: 'Pourcentage (%)',
+                        font: { size: 12 }
+                    },
+                    ticks: {
+                        font: { size: isMobile ? 9 : 11 }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { size: isMobile ? 8 : 11 },
+                        maxRotation: isMobile ? 45 : 0,
+                        minRotation: isMobile ? 45 : 0
+                    }
+                }
             }
         }
     });
 }
+
+// Ajouter un écouteur de redimensionnement
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        if (charts.comparison && globalData.length > 0) {
+            renderComparisonChart(globalData);
+        }
+    }, 250);
+});
 
 function renderComparisonTable(data) {
     const table = document.getElementById('comparison-table');
@@ -173,10 +214,10 @@ function renderComparisonTable(data) {
             <tr>
                 <td class="font-medium">${parti.parti}</td>
                 <td class="text-center">${parti.total}</td>
-                <td class="text-center">${cadres} <span class="text-gray-400">(${((cadres/parti.total)*100).toFixed(1)}%)</span></td>
-                <td class="text-center">${profInt} <span class="text-gray-400">(${((profInt/parti.total)*100).toFixed(1)}%)</span></td>
-                <td class="text-center">${employes} <span class="text-gray-400">(${((employes/parti.total)*100).toFixed(1)}%)</span></td>
-                <td class="text-center">${ouvriers} <span class="text-gray-400">(${ouvriers > 0 ? ((ouvriers/parti.total)*100).toFixed(1) : '0'}%)</span></td>
+                <td class="text-center">${cadres} <span class="text-gray-400">(${((cadres / parti.total) * 100).toFixed(1)}%)</span></td>
+                <td class="text-center">${profInt} <span class="text-gray-400">(${((profInt / parti.total) * 100).toFixed(1)}%)</span></td>
+                <td class="text-center">${employes} <span class="text-gray-400">(${((employes / parti.total) * 100).toFixed(1)}%)</span></td>
+                <td class="text-center">${ouvriers} <span class="text-gray-400">(${ouvriers > 0 ? ((ouvriers / parti.total) * 100).toFixed(1) : '0'}%)</span></td>
             </tr>
         `;
     });
@@ -202,14 +243,14 @@ function renderPariteStats(data) {
     const totalHommes = data.reduce((sum, p) => sum + p.hommes, 0);
     const totalFemmes = data.reduce((sum, p) => sum + p.femmes, 0);
     const totalDeputes = totalHommes + totalFemmes;
-    
-    const best = data.reduce((max, p) => 
+
+    const best = data.reduce((max, p) =>
         (p.femmes / p.total) > (max.femmes / max.total) ? p : max
-    , data[0]);
-    
-    const worst = data.reduce((min, p) => 
+        , data[0]);
+
+    const worst = data.reduce((min, p) =>
         (p.femmes / p.total) < (min.femmes / min.total) ? p : min
-    , data[0]);
+        , data[0]);
 
     document.getElementById('stats-cards').innerHTML = `
         <div class="stat-card success">
@@ -224,7 +265,7 @@ function renderPariteStats(data) {
         </div>
         <div class="stat-card info">
             <h4 class="stat-label">Moyenne Assemblée</h4>
-            <p class="stat-value">${((totalFemmes/totalDeputes)*100).toFixed(1)}%</p>
+            <p class="stat-value">${((totalFemmes / totalDeputes) * 100).toFixed(1)}%</p>
             <p class="stat-desc">de femmes députées</p>
         </div>
     `;
@@ -329,7 +370,7 @@ function renderPariteTable(data) {
                 <td class="text-center">${totalDeputes}</td>
                 <td class="text-center">${totalHommes}</td>
                 <td class="text-center">${totalFemmes}</td>
-                <td class="text-center">${((totalFemmes/totalDeputes)*100).toFixed(1)}%</td>
+                <td class="text-center">${((totalFemmes / totalDeputes) * 100).toFixed(1)}%</td>
                 <td></td>
             </tr>
         </tfoot>
@@ -492,7 +533,7 @@ async function loadAgeData() {
     try {
         const response = await fetch('data.json');
         const deputesData = await response.json();
-        
+
         // Calculer les âges
         const deputesAvecAge = deputesData.map(d => ({
             ...d,
@@ -511,7 +552,7 @@ async function loadAgeData() {
         const ageStats = Object.keys(partiGroups).map(parti => {
             const ages = partiGroups[parti].map(d => d.age);
             const moyenne = ages.reduce((a, b) => a + b, 0) / ages.length;
-            
+
             // Compter par tranches
             const tranches = {
                 'Moins de 30': ages.filter(a => a < 30).length,
@@ -542,7 +583,7 @@ async function loadAgeData() {
         document.getElementById('age-moyen-global').textContent = moyenneGlobale;
         document.getElementById('plus-jeune').textContent = plusJeune;
         document.getElementById('plus-age').textContent = plusAge;
-        
+
         // Tranche dominante
         const allTranches = {
             'Moins de 30': tousAges.filter(a => a < 30).length,
@@ -603,7 +644,7 @@ function renderAgeMoyenChart(ageStats) {
                 }
             },
             scales: {
-                x: { 
+                x: {
                     beginAtZero: true,
                     title: { display: true, text: 'Âge moyen (années)' }
                 }
@@ -616,9 +657,17 @@ function renderAgeDistributionChart(ageStats) {
     const ctx = document.getElementById('age-distribution-chart');
     if (charts.ageDistribution) charts.ageDistribution.destroy();
 
+    const isMobile = window.innerWidth < 768;
+    const isSmallMobile = window.innerWidth < 480;
+
+    // Définir la hauteur du canvas directement
+    ctx.style.height = isSmallMobile ? '300px' : isMobile ? '400px' : '500px';
+
     const trancheNames = ['Moins de 30', '30-40', '40-50', '50-60', '60-70', 'Plus de 70'];
     const datasets = ageStats.slice(0, 8).map((parti, index) => ({
-        label: parti.parti.substring(0, 30),
+        label: isMobile && parti.parti.length > 25
+            ? parti.parti.substring(0, 22) + '...'
+            : parti.parti.substring(0, 30),
         data: trancheNames.map(t => parti.tranches[t] || 0),
         backgroundColor: COLORS[index % COLORS.length]
     }));
@@ -631,18 +680,115 @@ function renderAgeDistributionChart(ageStats) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' }
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: { size: isMobile ? 9 : 11 },
+                        boxWidth: 12,
+                        padding: isMobile ? 6 : 10
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context) => {
+                            return `${context.dataset.label}: ${context.parsed.y} député${context.parsed.y > 1 ? 's' : ''}`;
+                        }
+                    }
+                }
             },
             scales: {
-                y: { 
+                y: {
                     beginAtZero: true,
-                    title: { display: true, text: 'Nombre de députés' }
+                    title: {
+                        display: !isMobile,
+                        text: 'Nombre de députés',
+                        font: { size: 12 }
+                    },
+                    ticks: {
+                        font: { size: isMobile ? 9 : 11 }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { size: isMobile ? 9 : 11 },
+                        maxRotation: isMobile ? 45 : 0,
+                        minRotation: isMobile ? 45 : 0
+                    }
                 }
             }
         }
     });
 }
+
+// Aussi pour renderAgeMoyenChart
+function renderAgeMoyenChart(ageStats) {
+    const ctx = document.getElementById('age-moyen-chart');
+    if (charts.ageMoyen) charts.ageMoyen.destroy();
+
+    const isMobile = window.innerWidth < 768;
+    const isSmallMobile = window.innerWidth < 480;
+
+    // Définir la hauteur du canvas
+    ctx.style.height = isSmallMobile ? '400px' : isMobile ? '500px' : '600px';
+
+    charts.ageMoyen = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ageStats.map(p => isMobile && p.parti.length > 25
+                ? p.parti.substring(0, 22) + '...'
+                : p.parti.substring(0, 30)),
+            datasets: [{
+                label: 'Âge moyen (années)',
+                data: ageStats.map(p => parseFloat(p.moyenne)),
+                backgroundColor: COLORS[0]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (context) => `Âge moyen: ${context.parsed.x} ans`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: !isMobile,
+                        text: 'Âge moyen (années)',
+                        font: { size: 12 }
+                    },
+                    ticks: {
+                        font: { size: isMobile ? 9 : 11 }
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: { size: isMobile ? 9 : 11 }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Ajouter à la fin de loadAgeData() pour gérer le resize
+let ageResizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(ageResizeTimer);
+    ageResizeTimer = setTimeout(() => {
+        if (charts.ageMoyen || charts.ageDistribution) {
+            loadAgeData(); // Recharger toutes les données
+        }
+    }, 250);
+});
 
 function renderAgeTable(ageStats) {
     let html = `
@@ -683,11 +829,11 @@ function renderAgeTable(ageStats) {
 
 function calculerCSPGenre(deputesData, filter) {
     const cspGenre = {};
-    
+
     deputesData.forEach(depute => {
         // Nettoyer la CSP
         let csp = (depute.Categorie_Socio || 'Non spécifié').replace(/\d+$/, '').trim();
-        
+
         // Normaliser les noms
         if (csp.includes('Artisan') || csp.includes('commerçant') || csp.includes('chef')) {
             csp = 'Artisans, commerçants, chefs d\'entreprises';
@@ -698,11 +844,11 @@ function calculerCSPGenre(deputesData, filter) {
         } else if (csp === 'Agriculteurs exploitants') {
             csp = 'Agriculteurs exploitants';
         }
-        
+
         if (!cspGenre[csp]) {
             cspGenre[csp] = { hommes: 0, femmes: 0, total: 0 };
         }
-        
+
         if (depute.sexe === 'M') {
             cspGenre[csp].hommes++;
         } else if (depute.sexe === 'F') {
@@ -710,7 +856,7 @@ function calculerCSPGenre(deputesData, filter) {
         }
         cspGenre[csp].total++;
     });
-    
+
     return cspGenre;
 }
 
@@ -721,13 +867,13 @@ async function loadCSPGenreData() {
             throw new Error('Fichier data.json non trouvé');
         }
         const deputesData = await response.json();
-        
+
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
 
         // Calculer la répartition CSP × Genre globale
         const cspGenreGlobal = calculerCSPGenre(deputesData, 'all');
-        
+
         // Grouper par parti pour le sélecteur
         const partiGroups = {};
         deputesData.forEach(depute => {
@@ -777,25 +923,45 @@ function renderCSPGenreChart(cspGenreData) {
         console.error('Element csp-genre-chart introuvable');
         return;
     }
-    
+
     if (charts.cspGenre) charts.cspGenre.destroy();
 
+    const isMobile = window.innerWidth < 768;
+    const isSmallMobile = window.innerWidth < 480;
+
+    ctx.style.height = isSmallMobile ? '350px' : isMobile ? '450px' : '500px';
+
     const categories = Object.keys(cspGenreData).sort((a, b) => cspGenreData[b].total - cspGenreData[a].total);
-    const mobile = window.innerWidth < 768;
+
+    // Calculer le total de chaque sexe
+    const totalHommes = categories.reduce((sum, c) => sum + cspGenreData[c].hommes, 0);
+    const totalFemmes = categories.reduce((sum, c) => sum + cspGenreData[c].femmes, 0);
+
+    // Calculer les proportions relatives (% de chaque CSP sur le total du sexe)
+    const proportionsHommes = categories.map(c =>
+        totalHommes > 0 ? ((cspGenreData[c].hommes / totalHommes) * 100).toFixed(1) : 0
+    );
+    const proportionsFemmes = categories.map(c =>
+        totalFemmes > 0 ? ((cspGenreData[c].femmes / totalFemmes) * 100).toFixed(1) : 0
+    );
 
     charts.cspGenre = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: categories.map(c => mobile && c.length > 20 ? c.substring(0, 17) + '...' : c),
+            labels: categories.map(c => {
+                if (isSmallMobile && c.length > 20) return c.substring(0, 17) + '...';
+                if (isMobile && c.length > 25) return c.substring(0, 22) + '...';
+                return c;
+            }),
             datasets: [
                 {
-                    label: 'Hommes',
-                    data: categories.map(c => cspGenreData[c].hommes),
+                    label: 'Hommes (% du total hommes)',
+                    data: proportionsHommes,
                     backgroundColor: COLORS[0]
                 },
                 {
-                    label: 'Femmes',
-                    data: categories.map(c => cspGenreData[c].femmes),
+                    label: 'Femmes (% du total femmes)',
+                    data: proportionsFemmes,
                     backgroundColor: COLORS[5]
                 }
             ]
@@ -804,19 +970,25 @@ function renderCSPGenreChart(cspGenreData) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { 
-                    position: mobile ? 'bottom' : 'top',
+                legend: {
+                    position: isMobile ? 'bottom' : 'top',
                     labels: {
-                        font: { size: mobile ? 10 : 12 }
+                        font: { size: isMobile ? 10 : 12 },
+                        boxWidth: 12,
+                        padding: isMobile ? 8 : 10
                     }
                 },
                 tooltip: {
                     callbacks: {
-                        afterLabel: (context) => {
+                        label: (context) => {
                             const csp = categories[context.dataIndex];
-                            const total = cspGenreData[csp].total;
-                            const percent = ((context.parsed.y / total) * 100).toFixed(1);
-                            return `${percent}% de cette CSP`;
+                            const isHommes = context.datasetIndex === 0;
+                            const count = isHommes ? cspGenreData[csp].hommes : cspGenreData[csp].femmes;
+                            const total = isHommes ? totalHommes : totalFemmes;
+                            return [
+                                `${context.dataset.label}`,
+                                `${context.parsed.y}% (${count}/${total})`
+                            ];
                         }
                     }
                 }
@@ -824,20 +996,23 @@ function renderCSPGenreChart(cspGenreData) {
             scales: {
                 x: {
                     ticks: {
-                        font: { size: mobile ? 9 : 11 },
-                        maxRotation: mobile ? 45 : 0
+                        font: { size: isMobile ? 8 : 11 },
+                        maxRotation: isMobile ? 45 : 0,
+                        minRotation: isMobile ? 45 : 0
                     }
                 },
-                y: { 
+                y: {
                     beginAtZero: true,
+                    max: 100,
                     stacked: false,
-                    title: { 
-                        display: !mobile,
-                        text: 'Nombre de députés',
-                        font: { size: mobile ? 10 : 12 }
+                    title: {
+                        display: !isMobile,
+                        text: '% de chaque sexe',
+                        font: { size: 12 }
                     },
                     ticks: {
-                        font: { size: mobile ? 9 : 11 }
+                        font: { size: isMobile ? 9 : 11 },
+                        callback: (value) => value + '%'
                     }
                 }
             }
@@ -845,26 +1020,37 @@ function renderCSPGenreChart(cspGenreData) {
     });
 }
 
+// Gestionnaire de resize pour les graphiques CSP×Genre
+let cspGenreResizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(cspGenreResizeTimer);
+    cspGenreResizeTimer = setTimeout(() => {
+        if (charts.cspGenre || charts.partiCSPGenre) {
+            loadCSPGenreData(); // Recharger toutes les données
+        }
+    }, 250);
+});
+
 function renderCSPGenreVisualMatrix(cspGenreData) {
     const container = document.getElementById('csp-genre-matrix');
     if (!container) {
         console.error('Element csp-genre-matrix introuvable');
         return;
     }
-    
+
     const categories = Object.keys(cspGenreData).sort((a, b) => cspGenreData[b].total - cspGenreData[a].total);
-    
+
     let html = '';
-    
+
     categories.forEach(csp => {
         const data = cspGenreData[csp];
         const percentHommes = data.total > 0 ? ((data.hommes / data.total) * 100).toFixed(1) : 0;
         const percentFemmes = data.total > 0 ? ((data.femmes / data.total) * 100).toFixed(1) : 0;
-        
+
         // Couleur selon la parité
         const parite = parseFloat(percentFemmes);
         const bgColor = parite >= 45 ? '#10b981' : parite >= 35 ? '#f59e0b' : '#ef4444';
-        
+
         html += `
             <div style="background: var(--gray-50); padding: 1.5rem; border-radius: 8px; border-left: 4px solid ${bgColor};">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
@@ -901,49 +1087,97 @@ function renderPartiCSPGenreChart(cspGenreData) {
         console.error('Element parti-csp-genre-chart introuvable');
         return;
     }
-    
+
     if (charts.partiCSPGenre) charts.partiCSPGenre.destroy();
 
+    const isMobile = window.innerWidth < 768;
+    const isSmallMobile = window.innerWidth < 480;
+
+    ctx.style.height = isSmallMobile ? '300px' : isMobile ? '350px' : '400px';
+
     const categories = Object.keys(cspGenreData).sort((a, b) => cspGenreData[b].total - cspGenreData[a].total);
+
+    // Calculer le total de chaque sexe
+    const totalHommes = categories.reduce((sum, c) => sum + cspGenreData[c].hommes, 0);
+    const totalFemmes = categories.reduce((sum, c) => sum + cspGenreData[c].femmes, 0);
+
+    // Proportions relatives
+    const proportionsHommes = categories.map(c =>
+        totalHommes > 0 ? ((cspGenreData[c].hommes / totalHommes) * 100).toFixed(1) : 0
+    );
+    const proportionsFemmes = categories.map(c =>
+        totalFemmes > 0 ? ((cspGenreData[c].femmes / totalFemmes) * 100).toFixed(1) : 0
+    );
 
     charts.partiCSPGenre = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: categories.map(c => c.length > 35 ? c.substring(0, 32) + '...' : c),
+            labels: categories.map(c => {
+                if (isSmallMobile && c.length > 20) return c.substring(0, 17) + '...';
+                if (isMobile && c.length > 30) return c.substring(0, 27) + '...';
+                return c.length > 35 ? c.substring(0, 32) + '...' : c;
+            }),
             datasets: [
                 {
-                    label: 'Hommes',
-                    data: categories.map(c => cspGenreData[c].hommes),
+                    label: 'Hommes (% du total hommes)',
+                    data: proportionsHommes,
                     backgroundColor: '#3b82f6'
                 },
                 {
-                    label: 'Femmes',
-                    data: categories.map(c => cspGenreData[c].femmes),
+                    label: 'Femmes (% du total femmes)',
+                    data: proportionsFemmes,
                     backgroundColor: '#ec4899'
                 }
             ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: { size: isMobile ? 10 : 12 },
+                        boxWidth: 12,
+                        padding: isMobile ? 6 : 10
+                    }
+                },
                 tooltip: {
                     callbacks: {
-                        afterLabel: (context) => {
+                        label: (context) => {
                             const csp = categories[context.dataIndex];
-                            const total = cspGenreData[csp].total;
-                            const percent = ((context.parsed.y / total) * 100).toFixed(1);
-                            return `${percent}% de cette CSP`;
+                            const isHommes = context.datasetIndex === 0;
+                            const count = isHommes ? cspGenreData[csp].hommes : cspGenreData[csp].femmes;
+                            const total = isHommes ? totalHommes : totalFemmes;
+                            return [
+                                `${context.dataset.label}`,
+                                `${context.parsed.y}% (${count}/${total})`
+                            ];
                         }
                     }
                 }
             },
             scales: {
-                y: { 
+                y: {
                     beginAtZero: true,
+                    max: 100,
                     stacked: false,
-                    title: { display: true, text: 'Nombre de députés' }
+                    title: {
+                        display: !isMobile,
+                        text: '% de chaque sexe',
+                        font: { size: 12 }
+                    },
+                    ticks: {
+                        font: { size: isMobile ? 9 : 11 },
+                        callback: (value) => value + '%'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { size: isMobile ? 8 : 11 },
+                        maxRotation: isMobile ? 45 : 0,
+                        minRotation: isMobile ? 45 : 0
+                    }
                 }
             }
         }
@@ -956,17 +1190,22 @@ function renderCSPGenreTable(cspGenreData) {
         console.error('Element csp-genre-table introuvable');
         return;
     }
-    
+
     const categories = Object.keys(cspGenreData).sort((a, b) => cspGenreData[b].total - cspGenreData[a].total);
-    
+
+    // Totaux par sexe
+    const totalHommes = categories.reduce((sum, csp) => sum + cspGenreData[csp].hommes, 0);
+    const totalFemmes = categories.reduce((sum, csp) => sum + cspGenreData[csp].femmes, 0);
+
     let html = `
         <thead>
             <tr>
                 <th>CSP</th>
                 <th class="text-center">Hommes</th>
+                <th class="text-center">% Hommes</th>
                 <th class="text-center">Femmes</th>
-                <th class="text-center">Total</th>
                 <th class="text-center">% Femmes</th>
+                <th class="text-center">Écart</th>
             </tr>
         </thead>
         <tbody>
@@ -974,36 +1213,34 @@ function renderCSPGenreTable(cspGenreData) {
 
     categories.forEach(csp => {
         const data = cspGenreData[csp];
-        const percentFemmes = data.total > 0 ? ((data.femmes / data.total) * 100).toFixed(1) : '0.0';
-        const parite = parseFloat(percentFemmes);
-        const colorClass = parite >= 40 ? 'text-green-600' : parite >= 30 ? 'text-yellow-600' : 'text-red-600';
+        const percentHommes = totalHommes > 0 ? ((data.hommes / totalHommes) * 100).toFixed(1) : '0.0';
+        const percentFemmes = totalFemmes > 0 ? ((data.femmes / totalFemmes) * 100).toFixed(1) : '0.0';
+        const ecart = (parseFloat(percentFemmes) - parseFloat(percentHommes)).toFixed(1);
+
+        const colorClass = parseFloat(ecart) > 0 ? 'text-green-600' : parseFloat(ecart) < 0 ? 'text-red-600' : 'text-gray-600';
 
         html += `
             <tr>
                 <td class="font-medium">${csp}</td>
                 <td class="text-center">${data.hommes}</td>
+                <td class="text-center font-semibold">${percentHommes}%</td>
                 <td class="text-center">${data.femmes}</td>
-                <td class="text-center font-semibold">${data.total}</td>
-                <td class="text-center"><span class="${colorClass} font-semibold">${percentFemmes}%</span></td>
+                <td class="text-center font-semibold">${percentFemmes}%</td>
+                <td class="text-center"><span class="${colorClass} font-semibold">${ecart > 0 ? '+' : ''}${ecart} pts</span></td>
             </tr>
         `;
     });
-
-    // Total
-    const totalHommes = categories.reduce((sum, csp) => sum + cspGenreData[csp].hommes, 0);
-    const totalFemmes = categories.reduce((sum, csp) => sum + cspGenreData[csp].femmes, 0);
-    const totalGeneral = totalHommes + totalFemmes;
-    const totalPercentFemmes = ((totalFemmes / totalGeneral) * 100).toFixed(1);
 
     html += `
         </tbody>
         <tfoot style="background: var(--gray-100); font-weight: bold;">
             <tr>
-                <td>TOTAL ASSEMBLÉE</td>
+                <td>TOTAL</td>
                 <td class="text-center">${totalHommes}</td>
+                <td class="text-center">100%</td>
                 <td class="text-center">${totalFemmes}</td>
-                <td class="text-center">${totalGeneral}</td>
-                <td class="text-center">${totalPercentFemmes}%</td>
+                <td class="text-center">100%</td>
+                <td class="text-center">-</td>
             </tr>
         </tfoot>
     `;
@@ -1034,12 +1271,12 @@ async function loadRepresentativiteData() {
     // Calculer la répartition à l'Assemblée
     const totalDeputes = data.reduce((sum, p) => sum + p.total, 0);
     const assembleeDataRaw = {};
-    
+
     data.forEach(parti => {
         Object.entries(parti.categories).forEach(([csp, count]) => {
             // Nettoyer le nom de la CSP
             let cspClean = csp.replace(/\d+$/, '').trim();
-            
+
             // Normaliser les noms pour correspondre aux catégories INSEE
             if (cspClean === 'Agriculteurs exploitants') {
                 cspClean = 'Agriculteurs exploitants';
@@ -1054,7 +1291,7 @@ async function loadRepresentativiteData() {
             } else if (cspClean === 'Ouvriers') {
                 cspClean = 'Ouvriers';
             }
-            
+
             assembleeDataRaw[cspClean] = (assembleeDataRaw[cspClean] || 0) + count;
         });
     });
@@ -1105,7 +1342,7 @@ function renderRepresentativiteCSPChart(populationData, assembleeData) {
                 }
             },
             scales: {
-                y: { 
+                y: {
                     beginAtZero: true,
                     title: { display: true, text: 'Pourcentage (%)' }
                 }
@@ -1184,7 +1421,7 @@ function renderRepresentativiteAgeChart() {
         },
         options: {
             responsive: true,
-            plugins: { 
+            plugins: {
                 legend: { position: 'top' },
                 tooltip: {
                     callbacks: {
@@ -1193,7 +1430,7 @@ function renderRepresentativiteAgeChart() {
                 }
             },
             scales: {
-                y: { 
+                y: {
                     beginAtZero: true,
                     title: { display: true, text: 'Pourcentage (%)' }
                 }
@@ -1204,13 +1441,13 @@ function renderRepresentativiteAgeChart() {
 
 function renderEcartsTable(populationData, assembleeData) {
     let html = '';
-    
+
     Object.keys(populationData).forEach(csp => {
         const popPercent = populationData[csp];
         const assPercent = parseFloat(assembleeData[csp] || 0);
         const ecart = (assPercent - popPercent).toFixed(1);
         const ratio = popPercent > 0 ? (assPercent / popPercent).toFixed(1) : 'N/A';
-        
+
         const isOver = assPercent > popPercent;
         const colorClass = isOver ? 'text-green-600' : 'text-red-600';
         const icon = isOver ? '↑' : '↓';
@@ -1230,3 +1467,20 @@ function renderEcartsTable(populationData, assembleeData) {
 
     document.getElementById('ecarts-tbody').innerHTML = html;
 }
+
+// Gestionnaire global de redimensionnement pour TOUS les graphiques
+let globalResizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(globalResizeTimer);
+    globalResizeTimer = setTimeout(() => {
+        // Comparaison CSP
+        if (charts.comparison && globalData.length > 0) {
+            renderComparisonChart(globalData);
+        }
+        // Age - relancer le chargement complet
+        if (charts.ageMoyen || charts.ageDistribution) {
+            loadAgeData();
+        }
+        // Autres graphiques si nécessaire
+    }, 250);
+});

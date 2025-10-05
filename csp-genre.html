@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSP × Genre : Analyse Croisée | Assemblée Nationale 2024</title>
     <meta name="description"
-        content="Analyse croisée des catégories socio-professionnelles et du genre à l'Assemblée nationale. Quelle parité dans chaque CSP ?">
+        content="Analyse croisée des catégories socio-professionnelles et du genre à l'Assemblée nationale. Distribution comparative des CSP entre hommes et femmes députés.">
     <link rel="canonical" href="https://votre-username.github.io/analyse-deputes/csp-genre.html">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -49,7 +49,7 @@
         <header class="page-header">
             <div class="container">
                 <h1>CSP × Genre : Analyse Croisée</h1>
-                <p class="lead">Quelle parité dans chaque catégorie socio-professionnelle ?</p>
+                <p class="lead">Distribution comparée des professions entre députées et députés</p>
             </div>
         </header>
 
@@ -57,18 +57,21 @@
             <section class="intro-section">
                 <div class="container">
                     <div class="card">
-                        <h2>Croiser CSP et genre : pourquoi ?</h2>
-                        <p>L'analyse croisée des catégories socio-professionnelles et du genre révèle des inégalités qui
-                            ne sont pas visibles dans les analyses simples. Les femmes cadres sont-elles aussi
-                            nombreuses que les hommes cadres ? La parité est-elle meilleure dans certaines CSP ?</p>
+                        <h2>Comparer la distribution des CSP selon le genre</h2>
+                        <p>Cette analyse révèle comment se répartissent les catégories socio-professionnelles 
+                            <strong>au sein de chaque groupe</strong> : parmi toutes les femmes députées, quel pourcentage 
+                            sont cadres, professions intermédiaires, etc. ? Et parmi tous les hommes députés ?</p>
+                        
+                        <p>Cette approche permet de voir si les femmes en politique doivent être issues de milieux 
+                            encore plus favorisés que leurs homologues masculins pour accéder à l'Assemblée.</p>
 
                         <div class="highlight-box mt-6">
                             <h3>🔍 Ce que révèle cette analyse</h3>
                             <ul>
-                                <li>Les <strong>plafonds de verre</strong> dans certaines CSP</li>
-                                <li>Les <strong>stéréotypes de genre</strong> par profession</li>
-                                <li>La <strong>double peine</strong> : femme ET classe populaire</li>
-                                <li>Les <strong>avancées réelles</strong> de la parité selon les milieux</li>
+                                <li>La <strong>concentration différentielle</strong> des hommes et femmes dans les CSP supérieures</li>
+                                <li>Le <strong>"sur-élitisme" féminin</strong> : les femmes doivent-elles être plus diplômées pour réussir ?</li>
+                                <li>Les <strong>écarts de distribution</strong> entre professions intellectuelles et classes populaires</li>
+                                <li>La <strong>double barrière</strong> : être femme ET de classe populaire rend l'accès quasi-impossible</li>
                             </ul>
                         </div>
                     </div>
@@ -84,14 +87,18 @@
 
                     <div id="content" class="hidden">
                         <div class="card mb-8">
-                            <h2 class="mb-6">Répartition Hommes-Femmes par CSP</h2>
+                            <h2 class="mb-6">Distribution des CSP par genre (en % de chaque groupe)</h2>
+                            <p class="text-gray-600 mb-4">
+                                <strong>Lecture :</strong> Ce graphique montre quel pourcentage des femmes députées 
+                                sont cadres, et quel pourcentage des hommes députés sont cadres. 
+                                Un écart révèle une concentration différente dans cette CSP.
+                            </p>
                             <canvas id="csp-genre-chart" style="max-height: 500px;"></canvas>
                         </div>
 
                         <div class="card mb-8">
                             <h2 class="mb-6">Matrice visuelle de parité par CSP</h2>
-                            <p class="text-gray-600 mb-6">Visualisation de la répartition hommes-femmes dans chaque
-                                catégorie</p>
+                            <p class="text-gray-600 mb-6">Répartition hommes-femmes en nombre absolu dans chaque catégorie</p>
                             <div id="csp-genre-matrix" style="display: grid; gap: 1rem;">
                                 <!-- Généré par JavaScript -->
                             </div>
@@ -99,7 +106,7 @@
 
                         <div class="card mb-8">
                             <h2 class="mb-6">Analyse par parti politique</h2>
-                            <p class="text-gray-600 mb-6">Sélectionnez un parti pour voir sa répartition CSP × Genre</p>
+                            <p class="text-gray-600 mb-6">Sélectionnez un parti pour comparer la distribution CSP entre ses députées et députés</p>
                             <select id="parti-select" class="mb-6"
                                 style="width: 100%; max-width: 500px; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem;">
                                 <option value="all">Tous les partis</option>
@@ -108,7 +115,11 @@
                         </div>
 
                         <div class="card">
-                            <h3 class="mb-4">Tableau détaillé par CSP</h3>
+                            <h3 class="mb-4">Tableau comparatif détaillé</h3>
+                            <p class="text-gray-600 mb-4">
+                                <strong>Écart positif (+)</strong> = surreprésentation chez les femmes | 
+                                <strong>Écart négatif (-)</strong> = sous-représentation chez les femmes
+                            </p>
                             <div class="overflow-x-auto">
                                 <table id="csp-genre-table">
                                     <!-- Généré par JavaScript -->
@@ -124,41 +135,56 @@
                     <div class="card">
                         <h2>Constats et interprétations</h2>
 
-                        <h3>1. Le plafond de verre persiste chez les cadres</h3>
-                        <p>Bien que la catégorie "Cadres et professions intellectuelles supérieures" soit majoritaire à
-                            l'Assemblée, les femmes y restent minoritaires. Cette sous-représentation des femmes cadres
-                            en politique reflète les inégalités plus larges du monde professionnel.</p>
+                        <h3>1. Le "sur-élitisme" féminin en politique</h3>
+                        <p>Si les femmes députées sont concentrées à plus de 80% dans les catégories "Cadres et professions 
+                            intellectuelles supérieures" contre 70% pour les hommes, cela révèle qu'elles doivent avoir 
+                            un profil encore plus favorisé socialement pour accéder à l'Assemblée. Ce phénomène, 
+                            documenté dans de nombreux secteurs, s'observe aussi en politique : les femmes doivent 
+                            "sur-performer" pour compenser les biais de genre.</p>
 
-                        <h3 class="mt-6">2. Meilleure parité dans les professions intermédiaires</h3>
-                        <p>Paradoxalement, les professions intermédiaires (enseignants, infirmiers, techniciens)
-                            montrent souvent une meilleure parité. Ces métiers, traditionnellement plus féminisés dans
-                            la société, se reflètent partiellement dans leur représentation politique.</p>
+                        <h3 class="mt-6">2. Distribution différentielle selon les professions</h3>
+                        <p>L'analyse comparative montre si certaines CSP sont plus "féminisées" ou "masculinisées" 
+                            à l'Assemblée. Par exemple, les professions intermédiaires (enseignement, santé) peuvent 
+                            être proportionnellement plus représentées chez les femmes députées, reflétant les stéréotypes 
+                            de genre professionnels de la société.</p>
 
-                        <h3 class="mt-6">3. La double invisibilité : femmes ET classes populaires</h3>
-                        <p>Les femmes issues des catégories employés et ouvriers sont quasi-absentes de l'Assemblée.
-                            Cette double peine (être femme ET de classe populaire) crée une zone d'invisibilité
-                            politique majeure.</p>
+                        <h3 class="mt-6">3. L'absence quasi-totale des classes populaires féminines</h3>
+                        <p>Si les employées et ouvrières représentent moins de 2% des femmes députées (contre peut-être 
+                            3-4% des hommes), cela montre une double barrière : le genre ET la classe sociale. 
+                            Cette invisibilité politique est structurelle et pose la question de la représentation 
+                            des intérêts des femmes des classes populaires.</p>
 
                         <div class="highlight-box mt-6">
-                            <h3>📈 Évolution souhaitable</h3>
-                            <p>Pour une véritable représentativité, il faudrait :</p>
+                            <h3>📊 Comment lire les écarts ?</h3>
+                            <p><strong>Un écart de +10 points</strong> pour les cadres signifie :</p>
                             <ul>
-                                <li><strong>Parité dans TOUTES les CSP</strong>, pas seulement globalement</li>
-                                <li><strong>Augmenter les femmes cadres</strong> en politique</li>
-                                <li><strong>Encourager les candidatures</strong> de femmes de classe populaire</li>
-                                <li><strong>Lutter contre les stéréotypes</strong> de genre par profession</li>
+                                <li>Si 85% des femmes députées sont cadres et 75% des hommes députés le sont</li>
+                                <li>Les femmes sont <strong>plus concentrées</strong> dans cette CSP élitiste</li>
+                                <li>Cela suggère une barrière à l'entrée <strong>plus élevée</strong> pour les femmes</li>
+                                <li>Inversement, un écart négatif montre une sous-représentation féminine dans cette CSP</li>
                             </ul>
                         </div>
 
-                        <h3 class="mt-6">4. Variations selon les partis</h3>
-                        <p>Certains partis réussissent mieux que d'autres à combiner parité ET diversité sociale.
-                            D'autres atteignent la parité mais uniquement dans les CSP supérieures, perpétuant ainsi les
-                            inégalités de classe.</p>
+                        <h3 class="mt-6">4. Variations selon les partis politiques</h3>
+                        <p>Certains partis ont des écarts de distribution CSP×Genre faibles, signe d'un recrutement 
+                            équilibré. D'autres montrent de forts écarts : leurs femmes députées sont issues de milieux 
+                            encore plus favorisés que leurs hommes députés, révélant des mécanismes de sélection 
+                            particulièrement élitistes pour les candidates.</p>
 
-                        <h3 class="mt-6">5. Impact sur les politiques publiques</h3>
-                        <p>Cette composition influence directement les politiques votées : un Parlement composé
-                            majoritairement d'hommes cadres aura naturellement des angles morts sur les réalités vécues
-                            par les femmes de classe populaire.</p>
+                        <h3 class="mt-6">5. Implications pour les politiques publiques</h3>
+                        <p>Une Assemblée où 85% des femmes sont cadres contre 70% des hommes produira des angles morts 
+                            différents : les préoccupations des femmes de classe moyenne ou populaire seront doublement 
+                            invisibilisées (par leur genre ET par leur absence de la chambre).</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>💡 Pour aller vers plus d'égalité</h3>
+                            <ul>
+                                <li><strong>Réduire les écarts de distribution</strong> entre hommes et femmes dans chaque CSP</li>
+                                <li><strong>Élargir le recrutement</strong> des femmes candidates au-delà des seules élites</li>
+                                <li><strong>Questionner les critères de sélection</strong> qui pénalisent doublement les femmes de classe populaire</li>
+                                <li><strong>Valoriser la diversité</strong> des parcours féminins, pas seulement les plus diplômés</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </section>

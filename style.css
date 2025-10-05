@@ -1033,12 +1033,34 @@ a:focus-visible {
     }
 }
 
-#csp-genre-chart {
-    height: 450px !important;
+
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 500px;
+}
+
+@media (max-width: 1024px) {
+    .chart-wrapper {
+        height: 450px;
+    }
 }
 
 @media (max-width: 768px) {
-    #csp-genre-chart {
-        height: 350px !important;
+    .chart-wrapper {
+        height: 400px;
+    }
+}
+
+@media (max-width: 640px) {
+    .chart-wrapper {
+        height: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-wrapper {
+        height: 300px;
     }
 }
