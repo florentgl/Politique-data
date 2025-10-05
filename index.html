@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse des Députés de l'Assemblée Nationale 2024 | Données & Statistiques</title>
+    <meta name="description"
+        content="Analyse interactive des députés français : catégories socio-professionnelles, parité hommes-femmes, âge et répartition par groupe politique. Données 2024.">
+    <meta property="og:title" content="Analyse des Députés - Assemblée Nationale 2024">
+    <meta property="og:description"
+        content="Visualisations interactives des CSP, parité et représentativité à l'Assemblée nationale">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="votre-code-verification" />
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">📊 QuiNousRepresente.fr</a>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Accueil</a></li>
+                    <li><a href="comparaison-csp.html">Comparaison CSP</a></li>
+                    <li><a href="detail-parti.html">Détail par parti</a></li>
+                    <li><a href="parite-hommes-femmes.html">Parité H/F</a></li>
+                    <li><a href="age-par-parti.html">Âge</a></li>
+                    <li><a href="csp-genre.html">CSP×Genre</a></li>
+                    <li><a href="representativite.html">Représentativité</a></li>
+                    <li><a href="a-propos.html">A propos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="hero">
+            <div class="container">
+                <h1>Analyse des Députés de l'Assemblée Nationale</h1>
+                <p class="lead">Explorez les données sur les catégories socio-professionnelles, la parité et la
+                    représentativité des 577 députés français élus en 2024</p>
+            </div>
+        </header>
+
+        <section class="stats-overview">
+            <div class="container">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="stat-card info">
+                        <h3 class="stat-label">Total députés</h3>
+                        <p class="stat-value" id="total-deputes">-</p>
+                        <p class="stat-desc">
+                            Élus à l'Assemblée nationale
+                            <span class="tooltip-container">
+                                <span class="info-icon">ⓘ</span>
+                                <span class="tooltip-text">2 sièges sont actuellement vacants (575/577 députés)</span>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="stat-card success">
+                        <h3 class="stat-label">Groupes politiques</h3>
+                        <p class="stat-value" id="total-partis">-</p>
+                        <p class="stat-desc">Représentés au Parlement</p>
+                    </div>
+                    <div class="stat-card danger">
+                        <h3 class="stat-label">Parité femmes</h3>
+                        <p class="stat-value" id="parite-femmes">-</p>
+                        <p class="stat-desc">De femmes députées</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-content">
+            <div class="container">
+                <div class="card">
+                    <h2>À propos de cette analyse</h2>
+                    <p>Cette plateforme propose une analyse approfondie de la composition sociologique de l'Assemblée
+                        nationale française. En explorant les catégories socio-professionnelles (CSP), la répartition
+                        hommes-femmes, l'âge des députés et la représentativité par rapport à la population, nous
+                        mettons en lumière les enjeux de démocratie représentative.</p>
+
+                    <h3 class="mt-6 mb-4">Pourquoi cette analyse ?</h3>
+                    <p>La composition sociale du Parlement reflète-t-elle la diversité de la société française ? Les
+                        cadres sont-ils surreprésentés ? Quelle est la réalité de la parité en politique ? L'Assemblée
+                        est-elle représentative de la population ? Ces questions sont essentielles pour comprendre notre
+                        démocratie.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="analyses-menu">
+            <div class="container">
+                <h2 class="text-center mb-8">Explorez les analyses</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    <a href="comparaison-csp.html" class="analysis-card">
+                        <div class="analysis-icon">📊</div>
+                        <h3>Comparaison par CSP</h3>
+                        <p>Comparez la répartition des catégories socio-professionnelles entre tous les groupes
+                            politiques. Découvrez quels partis ont le plus de cadres, d'employés ou d'ouvriers.</p>
+                        <span class="cta-link">Voir l'analyse →</span>
+                    </a>
+
+                    <a href="detail-parti.html" class="analysis-card">
+                        <div class="analysis-icon">🔍</div>
+                        <h3>Détail par parti</h3>
+                        <p>Explorez en profondeur la composition socio-professionnelle d'un groupe politique spécifique
+                            avec des graphiques détaillés et des statistiques précises.</p>
+                        <span class="cta-link">Voir l'analyse →</span>
+                    </a>
+
+                    <a href="parite-hommes-femmes.html" class="analysis-card">
+                        <div class="analysis-icon">⚖️</div>
+                        <h3>Parité Hommes-Femmes</h3>
+                        <p>Analysez la représentation des femmes à l'Assemblée nationale par groupe politique. Quels
+                            partis respectent le mieux la parité ?</p>
+                        <span class="cta-link">Voir l'analyse →</span>
+                    </a>
+
+                    <a href="age-par-parti.html" class="analysis-card">
+                        <div class="analysis-icon">📅</div>
+                        <h3>Âge des Députés</h3>
+                        <p>Pyramide des âges, âge moyen par parti, députés les plus jeunes et les plus âgés. Découvrez
+                            quelle génération siège à l'Assemblée.</p>
+                        <span class="cta-link">Voir l'analyse →</span>
+                    </a>
+
+                    <a href="csp-genre.html" class="analysis-card">
+                        <div class="analysis-icon">🔀</div>
+                        <h3>CSP × Genre</h3>
+                        <p>Analyse croisée puissante : quelle parité dans chaque catégorie socio-professionnelle ? Les
+                            femmes cadres sont-elles aussi nombreuses ?</p>
+                        <span class="cta-link">Voir l'analyse →</span>
+                    </a>
+
+                    <a href="representativite.html" class="analysis-card">
+                        <div class="analysis-icon">🎯</div>
+                        <h3>Représentativité</h3>
+                        <p>L'Assemblée reflète-t-elle la population française ? Comparaison des CSP, de l'âge et du
+                            genre entre députés et citoyens.</p>
+                        <span class="cta-link">Voir l'analyse →</span>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="key-findings">
+            <div class="container">
+                <div class="card">
+                    <h2>Principaux constats</h2>
+                    <div class="findings-grid">
+                        <div class="finding-item">
+                            <h4>🎓 Surreprésentation des cadres</h4>
+                            <p>Les cadres et professions intellectuelles supérieures représentent entre 52% et 91% des
+                                députés selon les groupes, alors qu'ils ne constituent qu'environ 18% de la population
+                                active française.</p>
+                        </div>
+                        <div class="finding-item">
+                            <h4>👷 Sous-représentation ouvrière</h4>
+                            <p>Seulement 6 députés ouvriers sur 577, soit à peine 1%, alors que les ouvriers
+                                représentent environ 20% de la population active.</p>
+                        </div>
+                        <div class="finding-item">
+                            <h4>⚖️ Parité encore insuffisante</h4>
+                            <p>Avec environ 37% de femmes députées, la parité parfaite (50/50) n'est pas encore
+                                atteinte, malgré les progrès réalisés ces dernières années.</p>
+                        </div>
+                        <div class="finding-item">
+                            <h4>📈 Disparités entre partis</h4>
+                            <p>Les écarts sont importants : certains groupes atteignent plus de 45% de femmes tandis que
+                                d'autres stagnent autour de 20-25%.</p>
+                        </div>
+                        <div class="finding-item">
+                            <h4>👴 Âge moyen élevé</h4>
+                            <p>L'âge moyen des députés se situe autour de 50 ans, avec de fortes disparités entre
+                                partis. Les moins de 30 ans restent très rares à l'Assemblée.</p>
+                        </div>
+                        <div class="finding-item">
+                            <h4>🎯 Écart de représentativité</h4>
+                            <p>La composition de l'Assemblée s'éloigne significativement de celle de la population
+                                française, particulièrement concernant les CSP populaires.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Données : Assemblée Nationale, législature 2024</p>
+            <p class="mt-2 text-xs">
+                Source :
+                <a href="https://www.assemblee-nationale.fr/dyn/deputes" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Assemblée nationale - Liste des
+                    députés</a>
+                •
+                <a href="https://data.assemblee-nationale.fr/" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Open Data Assemblée</a>
+            </p>
+            <p class="mt-2">
+                <a href="index.html" style="color: var(--gray-600); margin-right: 1rem;">← Retour à l'accueil</a>
+                <a href="https://github.com/votre-username/analyse-deputes" target="_blank"
+                    style="color: var(--gray-600);">Code source sur GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Charger les statistiques d'accueil
+        loadHomeStats();
+    </script>
+</body>
+<div id="cookie-banner"
+    style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--gray-900); color: white; padding: 1rem; z-index: 9999; box-shadow: 0 -4px 6px rgba(0,0,0,0.1);">
+    <div class="container">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <p style="color: white; margin: 0; flex: 1;">
+                Ce site utilise Google Analytics pour améliorer votre expérience.
+                <a href="mentions-legales.html" style="color: #3b82f6; text-decoration: underline;">En savoir plus</a>
+            </p>
+            <button onclick="acceptCookies()" class="btn-primary" style="margin: 0;">
+                J'accepte
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function acceptCookies() {
+        localStorage.setItem('cookies-accepted', 'true');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+
+    // Afficher la bannière si pas encore accepté
+    if (!localStorage.getItem('cookies-accepted')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+</script>
+
+</html>

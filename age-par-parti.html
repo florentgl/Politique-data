@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Âge des Députés par Parti | Assemblée Nationale 2024</title>
+    <meta name="description"
+        content="Analyse de l'âge des députés français par groupe politique : pyramide des âges, députés les plus jeunes et les plus âgés, âge moyen par parti.">
+    <link rel="canonical" href="https://votre-username.github.io/analyse-deputes/age-par-parti.html">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="votre-code-verification" />
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">📊 Analyse Députés</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="comparaison-csp.html">Comparaison CSP</a></li>
+                    <li><a href="detail-parti.html">Détail par parti</a></li>
+                    <li><a href="parite-hommes-femmes.html">Parité H/F</a></li>
+                    <li><a href="age-par-parti.html" class="active">Âge par parti</a></li>
+                    <li><a href="csp-genre.html">CSP×Genre</a></li>
+                    <li><a href="representativite.html">Représentativité</a></li>
+                    <li><a href="a-propos.html">A propos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <div class="container">
+                <h1>Âge des Députés par Parti Politique</h1>
+                <p class="lead">Pyramide des âges et analyse générationnelle de l'Assemblée nationale</p>
+            </div>
+        </header>
+
+        <article>
+            <section class="intro-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Une Assemblée jeune ou vieillissante ?</h2>
+                        <p>L'âge des députés est un indicateur révélateur du renouvellement politique et de la capacité
+                            des partis à attirer de nouvelles générations. Certains groupes misent sur l'expérience,
+                            d'autres sur le renouvellement.</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>📊 Chiffres clés</h3>
+                            <ul>
+                                <li>Âge moyen : <strong id="age-moyen-global">-</strong> ans</li>
+                                <li>Député le plus jeune : <strong id="plus-jeune">-</strong> ans</li>
+                                <li>Député le plus âgé : <strong id="plus-age">-</strong> ans</li>
+                                <li>Tranche d'âge dominante : <strong id="tranche-dominante">-</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <div class="container">
+                    <div id="loading" class="text-center">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-4">Chargement des données...</p>
+                    </div>
+
+                    <div id="content" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="stat-card info">
+                                <h4 class="stat-label">Parti le plus jeune</h4>
+                                <p class="stat-value" id="parti-plus-jeune-age">-</p>
+                                <p class="stat-desc" id="parti-plus-jeune-nom">-</p>
+                            </div>
+                            <div class="stat-card danger">
+                                <h4 class="stat-label">Parti le plus âgé</h4>
+                                <p class="stat-value" id="parti-plus-age-age">-</p>
+                                <p class="stat-desc" id="parti-plus-age-nom">-</p>
+                            </div>
+                            <div class="stat-card success">
+                                <h4 class="stat-label">Moins de 40 ans</h4>
+                                <p class="stat-value" id="moins-40-count">-</p>
+                                <p class="stat-desc" id="moins-40-percent">-</p>
+                            </div>
+                        </div>
+
+                        <div class="card mb-8">
+                            <h2 class="mb-6">Âge moyen par groupe politique</h2>
+                            <canvas id="age-moyen-chart"></canvas>
+                        </div>
+
+                        <div class="card mb-8">
+                            <h2 class="mb-6">Distribution par tranches d'âge</h2>
+                            <canvas id="age-distribution-chart"></canvas>
+                        </div>
+
+                        <div class="card">
+                            <h3 class="mb-4">Tableau détaillé</h3>
+                            <div class="overflow-x-auto">
+                                <table id="age-table">
+                                    <!-- Généré par JavaScript -->
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="analysis-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Analyse par génération</h2>
+
+                        <h3>1. Le renouvellement générationnel en marche ?</h3>
+                        <p>L'âge moyen des députés a légèrement baissé ces dernières années, passant d'environ 54 ans en
+                            2012 à 50 ans aujourd'hui. Ce rajeunissement reste toutefois modéré et très inégal selon les
+                            groupes politiques.</p>
+
+                        <h3 class="mt-6">2. Les partis "jeunes" vs les partis "d'expérience"</h3>
+                        <p>Certains partis attirent davantage de jeunes candidats, soit par stratégie politique
+                            (renouvellement), soit par nécessité (manque de figures établies). D'autres valorisent
+                            l'expérience et la séniorité.</p>
+
+                        <h3 class="mt-6">3. Les générations représentées</h3>
+                        <ul>
+                            <li><strong>Moins de 30 ans</strong> : Génération Z, très minoritaire</li>
+                            <li><strong>30-40 ans</strong> : Millennials, en progression</li>
+                            <li><strong>40-55 ans</strong> : Génération X, majoritaire</li>
+                            <li><strong>55-65 ans</strong> : Baby-boomers tardifs</li>
+                            <li><strong>Plus de 65 ans</strong> : Baby-boomers, en diminution</li>
+                        </ul>
+
+                        <div class="highlight-box mt-6">
+                            <h3>💡 Pourquoi l'âge compte ?</h3>
+                            <p>L'âge des députés influence directement :</p>
+                            <ul>
+                                <li><strong>Les priorités politiques</strong> : climat, retraites, éducation</li>
+                                <li><strong>La compréhension du numérique</strong> et des enjeux technologiques</li>
+                                <li><strong>La proximité</strong> avec les préoccupations des jeunes générations</li>
+                                <li><strong>La durée potentielle</strong> des carrières politiques</li>
+                            </ul>
+                        </div>
+
+                        <h3 class="mt-6">4. Âge et parité</h3>
+                        <p>Les femmes députées sont en moyenne légèrement plus jeunes que leurs homologues masculins,
+                            signe d'un renouvellement plus récent de la classe politique féminine.</p>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Données : Assemblée Nationale, législature 2024</p>
+            <p class="mt-2 text-xs">
+                Source :
+                <a href="https://www.assemblee-nationale.fr/dyn/deputes" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Assemblée nationale - Liste des
+                    députés</a>
+                •
+                <a href="https://data.assemblee-nationale.fr/" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Open Data Assemblée</a>
+            </p>
+            <p class="mt-2">
+                <a href="index.html" style="color: var(--gray-600); margin-right: 1rem;">← Retour à l'accueil</a>
+                <a href="https://github.com/votre-username/analyse-deputes" target="_blank"
+                    style="color: var(--gray-600);">Code source sur GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        loadAgeData();
+    </script>
+</body>
+<div id="cookie-banner"
+    style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--gray-900); color: white; padding: 1rem; z-index: 9999; box-shadow: 0 -4px 6px rgba(0,0,0,0.1);">
+    <div class="container">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <p style="color: white; margin: 0; flex: 1;">
+                Ce site utilise Google Analytics pour améliorer votre expérience.
+                <a href="mentions-legales.html" style="color: #3b82f6; text-decoration: underline;">En savoir plus</a>
+            </p>
+            <button onclick="acceptCookies()" class="btn-primary" style="margin: 0;">
+                J'accepte
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function acceptCookies() {
+        localStorage.setItem('cookies-accepted', 'true');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+
+    // Afficher la bannière si pas encore accepté
+    if (!localStorage.getItem('cookies-accepted')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+</script>
+
+</html>

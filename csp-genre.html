@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSP × Genre : Analyse Croisée | Assemblée Nationale 2024</title>
+    <meta name="description"
+        content="Analyse croisée des catégories socio-professionnelles et du genre à l'Assemblée nationale. Quelle parité dans chaque CSP ?">
+    <link rel="canonical" href="https://votre-username.github.io/analyse-deputes/csp-genre.html">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="votre-code-verification" />
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">📊 Analyse Députés</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="comparaison-csp.html">Comparaison CSP</a></li>
+                    <li><a href="detail-parti.html">Détail par parti</a></li>
+                    <li><a href="parite-hommes-femmes.html">Parité H/F</a></li>
+                    <li><a href="age-par-parti.html">Âge</a></li>
+                    <li><a href="csp-genre.html" class="active">CSP×Genre</a></li>
+                    <li><a href="representativite.html">Représentativité</a></li>
+                    <li><a href="a-propos.html">A propos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <div class="container">
+                <h1>CSP × Genre : Analyse Croisée</h1>
+                <p class="lead">Quelle parité dans chaque catégorie socio-professionnelle ?</p>
+            </div>
+        </header>
+
+        <article>
+            <section class="intro-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Croiser CSP et genre : pourquoi ?</h2>
+                        <p>L'analyse croisée des catégories socio-professionnelles et du genre révèle des inégalités qui
+                            ne sont pas visibles dans les analyses simples. Les femmes cadres sont-elles aussi
+                            nombreuses que les hommes cadres ? La parité est-elle meilleure dans certaines CSP ?</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>🔍 Ce que révèle cette analyse</h3>
+                            <ul>
+                                <li>Les <strong>plafonds de verre</strong> dans certaines CSP</li>
+                                <li>Les <strong>stéréotypes de genre</strong> par profession</li>
+                                <li>La <strong>double peine</strong> : femme ET classe populaire</li>
+                                <li>Les <strong>avancées réelles</strong> de la parité selon les milieux</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <div class="container">
+                    <div id="loading" class="text-center">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-4">Chargement des données...</p>
+                    </div>
+
+                    <div id="content" class="hidden">
+                        <div class="card mb-8">
+                            <h2 class="mb-6">Répartition Hommes-Femmes par CSP</h2>
+                            <canvas id="csp-genre-chart" style="max-height: 500px;"></canvas>
+                        </div>
+
+                        <div class="card mb-8">
+                            <h2 class="mb-6">Matrice visuelle de parité par CSP</h2>
+                            <p class="text-gray-600 mb-6">Visualisation de la répartition hommes-femmes dans chaque catégorie</p>
+                            <div id="csp-genre-matrix" style="display: grid; gap: 1rem;">
+                                <!-- Généré par JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="card mb-8">
+                            <h2 class="mb-6">Analyse par parti politique</h2>
+                            <p class="text-gray-600 mb-6">Sélectionnez un parti pour voir sa répartition CSP × Genre</p>
+                            <select id="parti-select" class="mb-6" style="width: 100%; max-width: 500px; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem;">
+                                <option value="all">Tous les partis</option>
+                            </select>
+                            <canvas id="parti-csp-genre-chart" style="max-height: 400px;"></canvas>
+                        </div>
+
+                        <div class="card">
+                            <h3 class="mb-4">Tableau détaillé par CSP</h3>
+                            <div class="overflow-x-auto">
+                                <table id="csp-genre-table">
+                                    <!-- Généré par JavaScript -->
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="analysis-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Constats et interprétations</h2>
+
+                        <h3>1. Le plafond de verre persiste chez les cadres</h3>
+                        <p>Bien que la catégorie "Cadres et professions intellectuelles supérieures" soit majoritaire à
+                            l'Assemblée, les femmes y restent minoritaires. Cette sous-représentation des femmes cadres
+                            en politique reflète les inégalités plus larges du monde professionnel.</p>
+
+                        <h3 class="mt-6">2. Meilleure parité dans les professions intermédiaires</h3>
+                        <p>Paradoxalement, les professions intermédiaires (enseignants, infirmiers, techniciens)
+                            montrent souvent une meilleure parité. Ces métiers, traditionnellement plus féminisés dans
+                            la société, se reflètent partiellement dans leur représentation politique.</p>
+
+                        <h3 class="mt-6">3. La double invisibilité : femmes ET classes populaires</h3>
+                        <p>Les femmes issues des catégories employés et ouvriers sont quasi-absentes de l'Assemblée.
+                            Cette double peine (être femme ET de classe populaire) crée une zone d'invisibilité
+                            politique majeure.</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>📈 Évolution souhaitable</h3>
+                            <p>Pour une véritable représentativité, il faudrait :</p>
+                            <ul>
+                                <li><strong>Parité dans TOUTES les CSP</strong>, pas seulement globalement</li>
+                                <li><strong>Augmenter les femmes cadres</strong> en politique</li>
+                                <li><strong>Encourager les candidatures</strong> de femmes de classe populaire</li>
+                                <li><strong>Lutter contre les stéréotypes</strong> de genre par profession</li>
+                            </ul>
+                        </div>
+
+                        <h3 class="mt-6">4. Variations selon les partis</h3>
+                        <p>Certains partis réussissent mieux que d'autres à combiner parité ET diversité sociale.
+                            D'autres atteignent la parité mais uniquement dans les CSP supérieures, perpétuant ainsi les
+                            inégalités de classe.</p>
+
+                        <h3 class="mt-6">5. Impact sur les politiques publiques</h3>
+                        <p>Cette composition influence directement les politiques votées : un Parlement composé
+                            majoritairement d'hommes cadres aura naturellement des angles morts sur les réalités vécues
+                            par les femmes de classe populaire.</p>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Données : Assemblée Nationale, législature 2024</p>
+            <p class="mt-2 text-xs">
+                Source :
+                <a href="https://www.assemblee-nationale.fr/dyn/deputes" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Assemblée nationale - Liste des
+                    députés</a>
+                •
+                <a href="https://data.assemblee-nationale.fr/" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Open Data Assemblée</a>
+            </p>
+            <p class="mt-2">
+                <a href="index.html" style="color: var(--gray-600); margin-right: 1rem;">← Retour à l'accueil</a>
+                <a href="https://github.com/votre-username/analyse-deputes" target="_blank"
+                    style="color: var(--gray-600);">Code source sur GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        loadCSPGenreData();
+    </script>
+</body>
+
+<div id="cookie-banner"
+    style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--gray-900); color: white; padding: 1rem; z-index: 9999; box-shadow: 0 -4px 6px rgba(0,0,0,0.1);">
+    <div class="container">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <p style="color: white; margin: 0; flex: 1;">
+                Ce site utilise Google Analytics pour améliorer votre expérience.
+                <a href="mentions-legales.html" style="color: #3b82f6; text-decoration: underline;">En savoir plus</a>
+            </p>
+            <button onclick="acceptCookies()" class="btn-primary" style="margin: 0;">
+                J'accepte
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function acceptCookies() {
+        localStorage.setItem('cookies-accepted', 'true');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+
+    // Afficher la bannière si pas encore accepté
+    if (!localStorage.getItem('cookies-accepted')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+</script>
+
+</html>

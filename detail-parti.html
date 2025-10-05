@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse Détaillée par Parti Politique | Assemblée Nationale 2024</title>
+    <meta name="description"
+        content="Explorez en profondeur la composition socio-professionnelle de chaque groupe parlementaire avec des statistiques détaillées et des graphiques interactifs.">
+    <link rel="canonical" href="https://votre-username.github.io/analyse-deputes/detail-parti.html">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="votre-code-verification" />
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">📊 Analyse Députés</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="comparaison-csp.html">Comparaison CSP</a></li>
+                    <li><a href="detail-parti.html">Détail par parti</a></li>
+                    <li><a href="parite-hommes-femmes.html">Parité H/F</a></li>
+                    <li><a href="age-par-parti.html">Âge</a></li>
+                    <li><a href="csp-genre.html">CSP×Genre</a></li>
+                    <li><a href="representativite.html">Représentativité</a></li>
+                    <li><a href="a-propos.html">A propos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <div class="container">
+                <h1>Analyse Détaillée par Parti Politique</h1>
+                <p class="lead">Explorez la composition socio-professionnelle d'un groupe parlementaire spécifique</p>
+            </div>
+        </header>
+
+        <article>
+            <section class="intro-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Comprendre la sociologie de chaque groupe</h2>
+                        <p>Chaque groupe parlementaire possède sa propre identité sociologique. Cette page vous permet
+                            d'analyser en profondeur la composition d'un parti : catégories socio-professionnelles
+                            représentées, parité hommes-femmes, et spécificités par rapport aux autres formations
+                            politiques.</p>
+
+                        <p class="mt-4">Sélectionnez un groupe politique dans le menu ci-dessous pour découvrir ses
+                            caractéristiques détaillées.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <div class="container">
+                    <div id="loading" class="text-center">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-4">Chargement des données...</p>
+                    </div>
+
+                    <div id="content" class="hidden">
+                        <div class="card mb-6">
+                            <label for="parti-select" class="block text-sm font-medium text-gray-700 mb-2">
+                                Sélectionnez un groupe politique
+                            </label>
+                            <select id="parti-select" class="mb-6">
+                                <!-- Options générées par JavaScript -->
+                            </select>
+
+                            <div style="border-top: 2px solid var(--gray-200); padding-top: 2rem; margin-top: 1rem;">
+                                <h2 id="parti-name" class="mb-2">-</h2>
+                                <p id="parti-total" class="text-gray-600 mb-6">-</p>
+
+                                <div id="parti-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                    <!-- Stats générées par JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="card">
+                                <h3 class="mb-6">Répartition des CSP</h3>
+                                <canvas id="detail-chart"></canvas>
+                            </div>
+
+                            <div class="card">
+                                <h3 class="mb-4">Détail par catégorie</h3>
+                                <div id="detail-list">
+                                    <!-- Liste générée par JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="analysis-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Comment interpréter ces données ?</h2>
+
+                        <h3>1. La dominante socio-professionnelle</h3>
+                        <p>La catégorie la plus représentée dans un groupe révèle son ancrage sociologique. Un parti
+                            avec 80% de cadres aura une approche différente de celui qui compte 30% d'employés et
+                            professions intermédiaires.</p>
+
+                        <h3 class="mt-6">2. La diversité interne</h3>
+                        <p>Plus un groupe présente une diversité de CSP, plus il est susceptible de porter des
+                            préoccupations variées. À l'inverse, une forte homogénéité peut indiquer un électorat ciblé
+                            mais aussi un risque de manque de représentativité.</p>
+
+                        <h3 class="mt-6">3. Les "anomalies" statistiques</h3>
+                        <p>La présence (ou l'absence) de certaines catégories est révélatrice. Par exemple, un parti de
+                            gauche sans aucun ouvrier ou un parti de droite sans entrepreneur pose question sur sa
+                            capacité à représenter sa base électorale théorique.</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>💡 Méthodologie</h3>
+                            <p>Les catégories socio-professionnelles sont celles déclarées par les députés eux-mêmes
+                                lors de leur inscription à l'Assemblée nationale. Elles correspondent à la profession
+                                exercée avant le mandat, pas nécessairement à l'origine sociale ou à la profession qui
+                                sera exercée après.</p>
+                        </div>
+
+                        <h3 class="mt-6">4. Évolutions et tendances</h3>
+                        <p>Comparer la composition actuelle avec les législatures précédentes (données non incluses ici)
+                            permet de mesurer les évolutions : rajeunissement, féminisation, diversification sociale ou
+                            au contraire reproduction des élites.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <div class="container">
+                    <div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+                        <h2>Comparez avec les autres analyses</h2>
+                        <p>Pour une vision d'ensemble, consultez également la comparaison entre tous les partis et
+                            l'analyse de la parité.</p>
+                        <div class="flex gap-4 mt-6 flex-wrap">
+                            <a href="comparaison-csp.html" class="btn-secondary">← Comparaison CSP</a>
+                            <a href="parite-hommes-femmes.html" class="btn-secondary">Parité H/F →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Données : Assemblée Nationale, législature 2024</p>
+            <p class="mt-2 text-xs">
+                Source :
+                <a href="https://www.assemblee-nationale.fr/dyn/deputes" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Assemblée nationale - Liste des
+                    députés</a>
+                •
+                <a href="https://data.assemblee-nationale.fr/" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Open Data Assemblée</a>
+            </p>
+            <p class="mt-2">
+                <a href="index.html" style="color: var(--gray-600); margin-right: 1rem;">← Retour à l'accueil</a>
+                <a href="https://github.com/votre-username/analyse-deputes" target="_blank"
+                    style="color: var(--gray-600);">Code source sur GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        loadDetailParti();
+    </script>
+</body>
+<div id="cookie-banner"
+    style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--gray-900); color: white; padding: 1rem; z-index: 9999; box-shadow: 0 -4px 6px rgba(0,0,0,0.1);">
+    <div class="container">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <p style="color: white; margin: 0; flex: 1;">
+                Ce site utilise Google Analytics pour améliorer votre expérience.
+                <a href="mentions-legales.html" style="color: #3b82f6; text-decoration: underline;">En savoir plus</a>
+            </p>
+            <button onclick="acceptCookies()" class="btn-primary" style="margin: 0;">
+                J'accepte
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function acceptCookies() {
+        localStorage.setItem('cookies-accepted', 'true');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+
+    // Afficher la bannière si pas encore accepté
+    if (!localStorage.getItem('cookies-accepted')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+</script>
+
+</html>

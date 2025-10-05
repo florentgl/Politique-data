@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Représentativité de l'Assemblée vs Population | Analyse 2024</title>
+    <meta name="description"
+        content="L'Assemblée nationale est-elle représentative de la population française ? Comparaison des CSP, de l'âge et du genre entre députés et citoyens.">
+    <link rel="canonical" href="https://votre-username.github.io/analyse-deputes/representativite.html">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="votre-code-verification" />
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">📊 Analyse Députés</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="comparaison-csp.html">Comparaison CSP</a></li>
+                    <li><a href="detail-parti.html">Détail par parti</a></li>
+                    <li><a href="parite-hommes-femmes.html">Parité H/F</a></li>
+                    <li><a href="age-par-parti.html">Âge</a></li>
+                    <li><a href="csp-genre.html">CSP×Genre</a></li>
+                    <li><a href="representativite.html" class="active">Représentativité</a></li>
+                    <li><a href="a-propos.html">A propos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <div class="container">
+                <h1>Représentativité : Assemblée vs Population</h1>
+                <p class="lead">L'Assemblée nationale reflète-t-elle la société française ?</p>
+            </div>
+        </header>
+
+        <article>
+            <section class="intro-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Une question démocratique fondamentale</h2>
+                        <p>Dans une démocratie représentative, le Parlement devrait théoriquement refléter la
+                            composition de la société. Mais qu'en est-il réellement ? Cette analyse compare la structure
+                            socio-professionnelle, l'âge et le genre des députés avec ceux de la population active
+                            française.</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>⚖️ Principe de représentativité</h3>
+                            <p>Si l'Assemblée était parfaitement représentative, elle compterait :</p>
+                            <ul>
+                                <li><strong>50% de femmes</strong> (vs ~37% actuellement)</li>
+                                <li><strong>~20% d'ouvriers</strong> (vs ~1% actuellement)</li>
+                                <li><strong>~18% de cadres</strong> (vs ~65% actuellement)</li>
+                                <li><strong>~28% d'employés</strong> (vs ~6% actuellement)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <div class="container">
+                    <div id="loading" class="text-center">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-4">Chargement des données...</p>
+                    </div>
+
+                    <div id="content" class="hidden">
+                        <div class="card mb-8">
+                            <h2 class="mb-6">Comparaison CSP : Assemblée vs Population active</h2>
+                            <p class="text-gray-600 mb-6">Les écarts révèlent les sur-représentations (en vert) et
+                                sous-représentations (en rouge)</p>
+                            <canvas id="representativite-csp-chart"></canvas>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                            <div class="card">
+                                <h3 class="mb-6">Parité Hommes-Femmes</h3>
+                                <canvas id="representativite-genre-chart"></canvas>
+                            </div>
+
+                            <div class="card">
+                                <h3 class="mb-6">Distribution par âge</h3>
+                                <canvas id="representativite-age-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3 class="mb-4">Tableau des écarts</h3>
+                            <div class="overflow-x-auto">
+                                <table id="ecarts-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Catégorie</th>
+                                            <th class="text-center">Population active</th>
+                                            <th class="text-center">Assemblée nationale</th>
+                                            <th class="text-center">Écart</th>
+                                            <th>Sur/Sous-représentation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ecarts-tbody">
+                                        <!-- Généré par JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="analysis-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Analyse des écarts de représentativité</h2>
+
+                        <h3>1. La sur-représentation massive des cadres</h3>
+                        <p>Les cadres et professions intellectuelles supérieures représentent environ 18% de la
+                            population active mais 65% des députés. C'est une sur-représentation de
+                            <strong>×3,6</strong>. Cette élite socio-économique occupe massivement l'espace politique.
+                        </p>
+
+                        <h3 class="mt-6">2. L'invisibilité des classes populaires</h3>
+                        <p>Les ouvriers (20% de la population active) ne représentent que 1% des députés, soit une
+                            sous-représentation de <strong>×20</strong>. Les employés (28% de la population) ne sont que
+                            6% à l'Assemblée. Cette absence pose un problème démocratique majeur.</p>
+
+                        <h3 class="mt-6">3. Le déficit démocratique de genre</h3>
+                        <p>Avec 37% de femmes députées contre 50% dans la population, le déficit reste de 13 points. Ce
+                            chiffre masque des disparités encore plus fortes dans certaines CSP et certains partis.</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>🔴 Conséquences politiques</h3>
+                            <p>Cette non-représentativité a des impacts concrets :</p>
+                            <ul>
+                                <li><strong>Angles morts</strong> : certaines réalités sociales sont ignorées</li>
+                                <li><strong>Politiques biaisées</strong> : lois favorisant les CSP représentées</li>
+                                <li><strong>Défiance</strong> : perte de confiance des citoyens non représentés</li>
+                                <li><strong>Reproduction</strong> : les élites se cooptent entre elles</li>
+                            </ul>
+                        </div>
+
+                        <h3 class="mt-6">4. Comparaison internationale</h3>
+                        <p>Ce phénomène n'est pas spécifique à la France. La plupart des démocraties occidentales
+                            connaissent une sur-représentation des élites éduquées. Cependant, certains pays nordiques
+                            et le Portugal ont mis en place des mécanismes pour améliorer la représentativité sociale.
+                        </p>
+
+                        <h3 class="mt-6">5. Pistes pour améliorer la représentativité</h3>
+                        <ul>
+                            <li><strong>Quotas sociaux</strong> : comme il existe des quotas de genre</li>
+                            <li><strong>Financement public</strong> : compenser le manque de moyens des candidats
+                                populaires</li>
+                            <li><strong>Formation politique</strong> : accompagner les candidats non issus des élites
+                            </li>
+                            <li><strong>Valorisation</strong> : reconnaître l'expérience professionnelle variée</li>
+                            <li><strong>Primaires ouvertes</strong> : démocratiser la sélection des candidats</li>
+                        </ul>
+
+                        <h3 class="mt-6">6. Représentation vs compétence ?</h3>
+                        <p>Certains arguent que la compétence prime sur la représentativité. Mais cette vision est
+                            biaisée : elle suppose que seules certaines CSP ont les capacités pour légiférer.
+                            L'expérience montre que la diversité sociale enrichit le débat et produit de meilleures
+                            politiques publiques.</p>
+
+                        <div class="highlight-box mt-6"
+                            style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+                            <h3>💡 Le saviez-vous ?</h3>
+                            <p>En 1789, lors des États généraux, le Tiers État représentait 98% de la population mais
+                                n'avait que 33% des voix. Aujourd'hui, les mécanismes ont changé mais la
+                                sous-représentation des classes populaires persiste.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <div class="container">
+                    <div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+                        <h2>Approfondir l'analyse</h2>
+                        <p>Explorez d'autres dimensions de la composition de l'Assemblée nationale.</p>
+                        <div class="flex gap-4 mt-6 flex-wrap">
+                            <a href="csp-genre.html" class="btn-secondary">← CSP × Genre</a>
+                            <a href="age-par-parti.html" class="btn-secondary">Âge par parti →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Données : Assemblée Nationale, législature 2024</p>
+            <p class="mt-2 text-xs">
+                Source :
+                <a href="https://www.assemblee-nationale.fr/dyn/deputes" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Assemblée nationale - Liste des
+                    députés</a>
+                •
+                <a href="https://data.assemblee-nationale.fr/" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Open Data Assemblée</a>
+            </p>
+            <p class="mt-2 text-xs">
+                Source population active : <a href="https://www.insee.fr/fr/statistiques/2489546" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">INSEE - Catégorie socioprofessionnelle
+                    selon le sexe et l'âge 2024</a>
+            </p>
+            <p class="mt-2">
+                <a href="index.html" style="color: var(--gray-600); margin-right: 1rem;">← Retour à l'accueil</a>
+                <a href="https://github.com/votre-username/analyse-deputes" target="_blank"
+                    style="color: var(--gray-600);">Code source sur GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        loadRepresentativiteData();
+    </script>
+</body>
+<div id="cookie-banner"
+    style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--gray-900); color: white; padding: 1rem; z-index: 9999; box-shadow: 0 -4px 6px rgba(0,0,0,0.1);">
+    <div class="container">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <p style="color: white; margin: 0; flex: 1;">
+                Ce site utilise Google Analytics pour améliorer votre expérience.
+                <a href="mentions-legales.html" style="color: #3b82f6; text-decoration: underline;">En savoir plus</a>
+            </p>
+            <button onclick="acceptCookies()" class="btn-primary" style="margin: 0;">
+                J'accepte
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function acceptCookies() {
+        localStorage.setItem('cookies-accepted', 'true');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+
+    // Afficher la bannière si pas encore accepté
+    if (!localStorage.getItem('cookies-accepted')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+</script>
+
+</html>

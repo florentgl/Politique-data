@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparaison des CSP par Parti | Assemblée Nationale 2024</title>
+    <meta name="description"
+        content="Comparaison détaillée des catégories socio-professionnelles des députés par groupe politique. Cadres, employés, ouvriers : qui siège à l'Assemblée ?">
+    <link rel="canonical" href="https://votre-username.github.io/analyse-deputes/comparaison-csp.html">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XXXXXXXXXX', {
+            'anonymize_ip': true,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+    </script>
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="votre-code-verification" />
+</head>
+
+<body>
+    <!-- Navigation à mettre à jour dans comparaison-csp.html, detail-parti.html, parite-hommes-femmes.html -->
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">📊 Analyse Députés</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="comparaison-csp.html">Comparaison CSP</a></li>
+                    <li><a href="detail-parti.html">Détail par parti</a></li>
+                    <li><a href="parite-hommes-femmes.html">Parité H/F</a></li>
+                    <li><a href="age-par-parti.html">Âge</a></li>
+                    <li><a href="csp-genre.html">CSP×Genre</a></li>
+                    <li><a href="representativite.html">Représentativité</a></li>
+                    <li><a href="a-propos.html">A propos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-header">
+            <div class="container">
+                <h1>Comparaison des Catégories Socio-Professionnelles</h1>
+                <p class="lead">Analyse comparative de la composition sociale des groupes parlementaires</p>
+            </div>
+        </header>
+
+        <article>
+            <section class="intro-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Une Assemblée de cadres ?</h2>
+                        <p>La composition socio-professionnelle de l'Assemblée nationale révèle une forte
+                            surreprésentation des cadres et professions intellectuelles supérieures. Cette analyse
+                            comparative permet de visualiser les différences entre groupes politiques et d'identifier
+                            les écarts avec la structure de la population active française.</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>📌 À retenir</h3>
+                            <ul>
+                                <li><strong>Tous les partis</strong> ont une majorité de cadres (52% à 91%)</li>
+                                <li>Les <strong>ouvriers</strong> sont quasi absents (&lt; 3%)</li>
+                                <li>Les <strong>professions intermédiaires</strong> varient de 7% à 29% selon les
+                                    groupes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-section">
+                <div class="container">
+                    <div class="card">
+                        <div id="loading" class="text-center">
+                            <div class="loading-spinner"></div>
+                            <p class="mt-4">Chargement des données...</p>
+                        </div>
+                        <div id="content" class="hidden">
+                            <h2 class="mb-6">Répartition par catégorie socio-professionnelle</h2>
+                            <div class="mb-6">
+                                <canvas id="comparison-chart"></canvas>
+                            </div>
+
+                            <div class="mt-8 overflow-x-auto">
+                                <h3 class="mb-4">Tableau détaillé</h3>
+                                <table id="comparison-table">
+                                    <!-- Généré par JavaScript -->
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="analysis-section">
+                <div class="container">
+                    <div class="card">
+                        <h2>Analyse et interprétation</h2>
+
+                        <h3>1. La domination des cadres</h3>
+                        <p>Tous les groupes parlementaires sans exception présentent une majorité de députés issus des
+                            catégories "Cadres et professions intellectuelles supérieures". Cette tendance est
+                            particulièrement marquée dans certains groupes qui dépassent les 75% de cadres.</p>
+
+                        <h3 class="mt-6">2. Les professions intermédiaires : un vivier sous-exploité</h3>
+                        <p>Les professions intermédiaires (techniciens, contremaîtres, instituteurs) représentent
+                            environ 25% de la population active mais sont minoritaires à l'Assemblée. Seuls quelques
+                            groupes politiques dépassent les 10% de députés issus de cette catégorie.</p>
+
+                        <h3 class="mt-6">3. L'absence criante des classes populaires</h3>
+                        <p>Employés et ouvriers, qui représentent ensemble près de 45% de la population active, sont
+                            largement sous-représentés à l'Assemblée. Cette situation pose la question de la
+                            représentativité sociale du Parlement et de sa capacité à comprendre les réalités des
+                            classes populaires.</p>
+
+                        <div class="highlight-box mt-6">
+                            <h3>💡 Pourquoi cette surreprésentation des cadres ?</h3>
+                            <p>Plusieurs facteurs expliquent ce phénomène :</p>
+                            <ul>
+                                <li><strong>Capital culturel et social</strong> : Les cadres maîtrisent mieux les codes
+                                    politiques</li>
+                                <li><strong>Disponibilité</strong> : Temps et ressources pour mener campagne</li>
+                                <li><strong>Réseaux</strong> : Accès facilité aux cercles de pouvoir</li>
+                                <li><strong>Sélection partisane</strong> : Les partis privilégient les profils
+                                    "sécurisants"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Données : Assemblée Nationale, législature 2024</p>
+            <p class="mt-2 text-xs">
+                Source :
+                <a href="https://www.assemblee-nationale.fr/dyn/deputes" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Assemblée nationale - Liste des
+                    députés</a>
+                •
+                <a href="https://data.assemblee-nationale.fr/" target="_blank"
+                    style="color: var(--gray-600); text-decoration: underline;">Open Data Assemblée</a>
+            </p>
+            <p class="mt-2">
+                <a href="index.html" style="color: var(--gray-600); margin-right: 1rem;">← Retour à l'accueil</a>
+                <a href="https://github.com/votre-username/analyse-deputes" target="_blank"
+                    style="color: var(--gray-600);">Code source sur GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Charger et afficher les données
+        loadComparisonCSP();
+    </script>
+</body>
+<div id="cookie-banner"
+    style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--gray-900); color: white; padding: 1rem; z-index: 9999; box-shadow: 0 -4px 6px rgba(0,0,0,0.1);">
+    <div class="container">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <p style="color: white; margin: 0; flex: 1;">
+                Ce site utilise Google Analytics pour améliorer votre expérience.
+                <a href="mentions-legales.html" style="color: #3b82f6; text-decoration: underline;">En savoir plus</a>
+            </p>
+            <button onclick="acceptCookies()" class="btn-primary" style="margin: 0;">
+                J'accepte
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function acceptCookies() {
+        localStorage.setItem('cookies-accepted', 'true');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+
+    // Afficher la bannière si pas encore accepté
+    if (!localStorage.getItem('cookies-accepted')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+</script>
+
+</html>
